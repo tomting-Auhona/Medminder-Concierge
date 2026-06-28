@@ -39,6 +39,34 @@ The mock data still demonstrates the full agent workflow:
 
 The system is designed so real services such as Gemini Vision, secure databases, and caregiver notification APIs could be connected later without changing the core safety-first architecture.
 
+## ADK/MCP Status
+
+The fully tested workflow for MedMinder Concierge runs in the Kaggle notebook.
+
+The repository also includes an ADK/MCP-style package as a course-aligned extension. This package shows the architectural path toward a local agent development setup, but it is not presented as a fully deployed production system.
+
+The ADK-style root agent file is located at:
+
+```text
+medminder_adk_package/medminder_agent/agent.py
+```
+
+The MCP server file is located at:
+
+```text
+medminder_adk_package/medminder_mcp_server.py
+```
+
+The MCP server file demonstrates how specialist agents could expose their capabilities as callable tools to external orchestrators, following the Model Context Protocol pattern covered in the course.
+
+This separation is intentional:
+
+* the Kaggle notebook proves the safe multi-agent workflow
+* the ADK/MCP package shows how the same system can move toward a structured agent runtime
+* the MCP file demonstrates how schedule lookup, package verification, caregiver escalation, and history tools could be exposed through a tool interface
+
+This avoids overclaiming a live deployment while still showing the production direction of the system.
+
 ## How to Run / Setup Instructions
 
 This project can be reviewed in two ways:
