@@ -19,6 +19,26 @@ The final output is either a completed check-in, a caregiver alert, or an update
 
 <img width="1491" height="1055" alt="architecture" src="https://github.com/user-attachments/assets/b918a0ea-107f-440f-98b5-909ebed6b36c" />
 
+## Why This Project Uses Mock Data
+
+MedMinder Concierge uses mock data intentionally.
+
+Because the project involves medication routines, the demo avoids real patient data, real phone numbers, real caregiver contacts, and real medical records. This keeps the project safe, reproducible, and reviewable.
+
+The mock data still demonstrates the full agent workflow:
+
+- schedule lookup
+- package verification
+- safety screening
+- self-confirmation
+- refusal analysis
+- caregiver escalation
+- history tracking
+- trajectory logging
+- structured tool-call execution
+
+The system is designed so real services such as Gemini Vision, secure databases, and caregiver notification APIs could be connected later without changing the core safety-first architecture.
+
 ## How to Run / Setup Instructions
 
 This project can be reviewed in two ways:
