@@ -65,8 +65,6 @@ This separation is intentional:
 * the ADK/MCP package shows how the same system can move toward a structured agent runtime
 * the MCP file demonstrates how schedule lookup, package verification, caregiver escalation, and history tools could be exposed through a tool interface
 
-This avoids overclaiming a live deployment while still showing the production direction of the system.
-
 ## How to Run / Setup Instructions
 
 This project can be reviewed in two ways:
