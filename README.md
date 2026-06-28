@@ -17,6 +17,175 @@ The final output is either a completed check-in, a caregiver alert, or an update
 
 <img width="1491" height="1055" alt="ChatGPT Image Jun 28, 2026, 12_53_26 PM" src="https://github.com/user-attachments/assets/6fac9b19-61c3-4a95-b14a-d6531d8ba945" />
 
+## How to Run / Setup Instructions for Judges
+
+This project can be reviewed in two ways:
+
+1. by opening the main Kaggle notebook, which contains the full tested multi-agent workflow
+2. by running the generated ADK/MCP package locally, which shows the repo-ready agent extension
+
+---
+
+### Option 1: Run the Main Notebook
+
+Open the notebook file:
+
+```text
+medminder-concierge.ipynb
+```
+
+Then run all cells from top to bottom.
+
+The notebook demonstrates:
+
+* the full MedMinder multi-agent workflow
+* safety guardrails
+* medication schedule lookup
+* package verification simulation
+* user self-confirmation
+* caregiver escalation
+* refusal reason analysis
+* history and adherence tracking
+* test cases and evaluation results
+* phone-style dashboard prototype
+* ADK/MCP package generation
+
+Expected result:
+
+```text
+Main coordinator tests: 10/10 passed
+Course-inspired trace evaluation: 5/5 passed
+Security smoke test: passed
+```
+
+The notebook uses mock data only. No real patient data, API keys, SMS, or medical records are required.
+
+---
+
+### Option 2: Run the ADK/MCP Package Locally
+
+The generated course-aligned package is inside:
+
+```text
+medminder_adk_package/
+```
+
+From the repository root, move into the package folder:
+
+```bash
+cd medminder_adk_package
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the smoke test:
+
+```bash
+python smoke_test.py
+```
+
+Run the trace evaluation:
+
+```bash
+python tests/eval/generate_traces.py
+```
+
+Expected result:
+
+```text
+Smoke test passed.
+Passed 5/5 course-inspired evaluation cases.
+```
+
+---
+
+### Optional ADK and MCP Commands
+
+The package includes an ADK-style root agent and a local MCP server file.
+
+ADK-style agent file:
+
+```text
+medminder_adk_package/medminder_agent/agent.py
+```
+
+MCP server file:
+
+```text
+medminder_adk_package/medminder_mcp_server.py
+```
+
+Optional local MCP command:
+
+```bash
+python medminder_mcp_server.py
+```
+
+Optional ADK command:
+
+```bash
+adk run medminder_agent
+```
+
+These files are included as a course-aligned extension. The main tested workflow is in the Kaggle notebook.
+
+---
+
+### Files to Review
+
+Important files for reviewing:
+
+```text
+README.md
+medminder-concierge.ipynb
+architecture_diagram.png
+submission.csv
+medminder_evaluation_results.csv
+STATE_MEMORY.md
+PRODUCTION_READINESS.md
+medminder_adk_package/
+```
+
+Inside `medminder_adk_package/`, the most important files are:
+
+```text
+medminder_agent/agent.py
+medminder_agent/security.py
+medminder_agent/security_screen.py
+medminder_agent/skills/medminder-safe-checkin/SKILL.md
+medminder_mcp_server.py
+tests/eval/generate_traces.py
+tests/eval/datasets/medminder-eval-dataset.json
+threat_model.md
+AGENTS_CLI_NOTES.md
+MCP_CONFIG_NOTES.md
+COURSE_ALIGNMENT.md
+```
+
+---
+
+### Safety Note
+
+MedMinder Concierge is a safety-first prototype.
+
+It does not:
+
+* give medical advice
+* prescribe medicine
+* change dosages
+* identify loose pills
+* prove ingestion
+* use real patient data
+* send real SMS or calls
+* include API keys or passwords
+
+The purpose of this submission is to demonstrate a safe, modular, multi-agent medication routine workflow using mock data.
+
+
 ## State, Memory, Agent Skills, and Production Readiness
 
 MedMinder uses lightweight structured state instead of storing long free-form conversations.
