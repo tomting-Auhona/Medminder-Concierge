@@ -1,0 +1,10 @@
+step,timestamp,agent,action,decision,output,safety_event
+1,2026-06-28T06:33:18.693577Z,User Interaction,senior_triggers_checkin,received,Senior user begins scheduled medication check-in.,False
+2,2026-06-28T06:33:18.693598Z,SafetyGuardrailAgent,screen_input,passed,"No dosage change, diagnosis, or unsafe medication request detected.",False
+3,2026-06-28T06:33:18.693607Z,MedMinderCoordinator,load_context_and_route,route_to_schedule,Coordinator loads current check-in state and routes to ScheduleAgent.,False
+4,2026-06-28T06:33:18.693614Z,ScheduleAgent,lookup_due_medicine,due_medicine_found,Amlodipine 5 mg is due according to the mock schedule.,False
+5,2026-06-28T06:33:18.693620Z,VisionPackagingAgent,verify_package_text,package_verified,Mock OCR package text matches Amlodipine 5 mg.,False
+6,2026-06-28T06:33:18.693626Z,User Interaction,user_refusal_response,not_confirmed,User says they do not want to confirm taking the medicine.,False
+7,2026-06-28T06:33:18.693633Z,RefusalReasonAnalysisAgent,classify_refusal_reason,possible_side_effect_concern,User refusal is classified as possible side-effect concern.,True
+8,2026-06-28T06:33:18.693639Z,CaregiverEscalationAgent,create_escalation,caregiver_alert_created,Caregiver alert is simulated for review.,True
+9,2026-06-28T06:33:18.693646Z,HistoryTrackerAgent,update_history,history_updated,Incomplete check-in is recorded for adherence tracking.,False

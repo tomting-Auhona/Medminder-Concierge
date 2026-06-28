@@ -1,0 +1,88 @@
+{
+  "trace_id": "9bf5071b-b677-4dd0-a6fc-70b59e3097eb",
+  "case": "CASE #03: Refusal Handling",
+  "final_status": "caregiver_escalation",
+  "trajectory": [
+    {
+      "step": 1,
+      "timestamp": "2026-06-28T06:33:18.693577Z",
+      "agent": "User Interaction",
+      "action": "senior_triggers_checkin",
+      "decision": "received",
+      "output": "Senior user begins scheduled medication check-in.",
+      "safety_event": false
+    },
+    {
+      "step": 2,
+      "timestamp": "2026-06-28T06:33:18.693598Z",
+      "agent": "SafetyGuardrailAgent",
+      "action": "screen_input",
+      "decision": "passed",
+      "output": "No dosage change, diagnosis, or unsafe medication request detected.",
+      "safety_event": false
+    },
+    {
+      "step": 3,
+      "timestamp": "2026-06-28T06:33:18.693607Z",
+      "agent": "MedMinderCoordinator",
+      "action": "load_context_and_route",
+      "decision": "route_to_schedule",
+      "output": "Coordinator loads current check-in state and routes to ScheduleAgent.",
+      "safety_event": false
+    },
+    {
+      "step": 4,
+      "timestamp": "2026-06-28T06:33:18.693614Z",
+      "agent": "ScheduleAgent",
+      "action": "lookup_due_medicine",
+      "decision": "due_medicine_found",
+      "output": "Amlodipine 5 mg is due according to the mock schedule.",
+      "safety_event": false
+    },
+    {
+      "step": 5,
+      "timestamp": "2026-06-28T06:33:18.693620Z",
+      "agent": "VisionPackagingAgent",
+      "action": "verify_package_text",
+      "decision": "package_verified",
+      "output": "Mock OCR package text matches Amlodipine 5 mg.",
+      "safety_event": false
+    },
+    {
+      "step": 6,
+      "timestamp": "2026-06-28T06:33:18.693626Z",
+      "agent": "User Interaction",
+      "action": "user_refusal_response",
+      "decision": "not_confirmed",
+      "output": "User says they do not want to confirm taking the medicine.",
+      "safety_event": false
+    },
+    {
+      "step": 7,
+      "timestamp": "2026-06-28T06:33:18.693633Z",
+      "agent": "RefusalReasonAnalysisAgent",
+      "action": "classify_refusal_reason",
+      "decision": "possible_side_effect_concern",
+      "output": "User refusal is classified as possible side-effect concern.",
+      "safety_event": true
+    },
+    {
+      "step": 8,
+      "timestamp": "2026-06-28T06:33:18.693639Z",
+      "agent": "CaregiverEscalationAgent",
+      "action": "create_escalation",
+      "decision": "caregiver_alert_created",
+      "output": "Caregiver alert is simulated for review.",
+      "safety_event": true
+    },
+    {
+      "step": 9,
+      "timestamp": "2026-06-28T06:33:18.693646Z",
+      "agent": "HistoryTrackerAgent",
+      "action": "update_history",
+      "decision": "history_updated",
+      "output": "Incomplete check-in is recorded for adherence tracking.",
+      "safety_event": false
+    }
+  ]
+}
