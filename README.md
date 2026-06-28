@@ -201,7 +201,6 @@ The generated ADK/MCP package also includes an Agent Skill file at:
 ```text
 medminder_adk_package/medminder_agent/skills/medminder-safe-checkin/SKILL.md
 ```
-
 This documents the safe medication check-in workflow for reuse in an agentic development setup.
 
 More details are available in:
@@ -215,6 +214,13 @@ Generated files:
 
 - `medminder_agent_trajectory_logs.csv`
 - `medminder_agent_trajectory_logs.json`
+
+The notebook also includes a structured tool-call demo through `MedMinderToolKit`, which simulates ADK/MCP-style tool binding. It prints tool-call payloads, validates allowlisted tools, executes schedule lookup, package text checking, caregiver alert simulation, and history summary generation.
+
+Generated files:
+
+- `medminder_structured_tool_call_logs.csv`
+- `medminder_structured_tool_call_logs.json`
 
 The current project is a Kaggle-tested prototype with a repo-ready ADK/MCP extension. A live deployment is not included because the project is safety-first and uses mock medication data only. A future production version could run as a hosted API with health checks, structured logs, safety event tracking, caregiver authentication, and secure storage.
 
