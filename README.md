@@ -1,7 +1,7 @@
-# Medminder-Concierge
+# MedMinder Concierge
 Safety-first multi-agent medication routine assistant for elderly users and caregivers, with Kaggle demo, ADK/MCP package, Agent Skill, and security guardrails.
 
-<img width="1774" height="887" alt="Medminder_Concierge" src="https://github.com/user-attachments/assets/5101d96d-7528-49ae-9918-5de0d5da88c6" />
+<img width="1774" height="887" alt="MedMinder Concierge" src="https://github.com/user-attachments/assets/5101d96d-7528-49ae-9918-5de0d5da88c6" />
 
 ## Architecture
 
