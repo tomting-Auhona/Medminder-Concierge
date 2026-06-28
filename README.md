@@ -15,7 +15,7 @@ The specialist agents handle schedule lookup, timing checks, duplicate preventio
 
 The final output is either a completed check-in, a caregiver alert, or an updated history/adherence summary.
 
-<img width="1491" height="1055" alt="ChatGPT Image Jun 28, 2026, 12_53_26 PM" src="https://github.com/user-attachments/assets/6fac9b19-61c3-4a95-b14a-d6531d8ba945" />
+<img width="1491" height="1055" alt="architecture" src="https://github.com/user-attachments/assets/b918a0ea-107f-440f-98b5-909ebed6b36c" />
 
 ## How to Run / Setup Instructions for Judges
 
