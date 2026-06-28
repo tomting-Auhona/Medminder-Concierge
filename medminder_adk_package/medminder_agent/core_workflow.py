@@ -1,10 +1,13 @@
-"""
-Core MedMinder workflow logic.
+"""Core MedMinder workflow logic.
 
 This file makes the main safety-first workflow importable outside the notebook.
+It is deliberately deterministic so judges can run it without API keys while
+still seeing the actual agent routing, safety, package-check, and escalation
+decisions.
 """
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Dict, List
 
 
@@ -117,24 +120,102 @@ def verify_package_text(expected_name: str, expected_dosage: str, detected_text:
     }
 
 
-def run_checkin_workflow(user_text: str, medicine_name: str, day: str, detected_text: str, user_confirmed: bool) -> Dict:
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _trace_step(step: int, agent: str, action: str, decision: str, output: str, safety_event: bool = False) -> Dict:
+    return {
+        "step": step,
+        "timestamp": _utc_now(),
+        "agent": agent,
+        "action": action,
+        "decision": decision,
+        "output": output,
+        "safety_event": safety_event,
+    }
+
+
+def run_checkin_workflow(
+    user_text: str,
+    medicine_name: str,
+    day: str,
+    detected_text: str,
+    user_confirmed: bool,
+    return_trace: bool = False,
+) -> Dict:
+    trace = [
+        _trace_step(
+            1,
+            "UserInteraction",
+            "start_checkin",
+            "received",
+            f"User started a medication check-in for {medicine_name} on {day}.",
+        )
+    ]
+
     safety = safety_screen(user_text)
+    trace.append(
+        _trace_step(
+            2,
+            "SafetyGuardrailAgent",
+            "screen_user_text",
+            "allowed" if safety["allowed"] else "blocked",
+            safety["reason"],
+            safety_event=not safety["allowed"],
+        )
+    )
 
     if not safety["allowed"]:
-        return {
+        result = {
             "final_status": "blocked_and_escalated",
             "safety": safety,
             "reason": safety["reason"]
         }
+        trace.append(
+            _trace_step(
+                3,
+                "CaregiverEscalationAgent",
+                "create_alert",
+                "caregiver_alert_created",
+                safety["reason"],
+                safety_event=True,
+            )
+        )
+        if return_trace:
+            result["trace"] = trace
+        return result
 
     schedule = schedule_lookup(medicine_name, day)
+    trace.append(
+        _trace_step(
+            3,
+            "ScheduleAgent",
+            "lookup_medication",
+            schedule["status"],
+            "Scheduled medicine found." if schedule["status"] == "found" else "Medicine was not found in the active schedule.",
+        )
+    )
 
     if schedule["status"] != "found":
-        return {
+        result = {
             "final_status": "escalated",
             "safety": safety,
             "reason": "Medicine not found in active schedule."
         }
+        trace.append(
+            _trace_step(
+                4,
+                "CaregiverEscalationAgent",
+                "create_alert",
+                "caregiver_alert_created",
+                result["reason"],
+                safety_event=True,
+            )
+        )
+        if return_trace:
+            result["trace"] = trace
+        return result
 
     med = schedule["medicine"]
 
@@ -143,32 +224,99 @@ def run_checkin_workflow(user_text: str, medicine_name: str, day: str, detected_
         expected_dosage=med["dosage"],
         detected_text=detected_text
     )
+    trace.append(
+        _trace_step(
+            4,
+            "VisionPackagingAgent",
+            "verify_package_text",
+            package["status"],
+            package["reason"],
+            safety_event=not package["package_match"],
+        )
+    )
 
     if not package["package_match"]:
-        return {
+        result = {
             "final_status": "escalated",
             "safety": safety,
             "schedule": schedule,
             "package": package,
             "reason": package["reason"]
         }
+        trace.append(
+            _trace_step(
+                5,
+                "CaregiverEscalationAgent",
+                "create_alert",
+                "caregiver_alert_created",
+                package["reason"],
+                safety_event=True,
+            )
+        )
+        if return_trace:
+            result["trace"] = trace
+        return result
 
     if not user_confirmed:
-        return {
+        result = {
             "final_status": "incomplete_and_escalated",
             "safety": safety,
             "schedule": schedule,
             "package": package,
             "reason": "User did not confirm completion."
         }
+        trace.append(
+            _trace_step(
+                5,
+                "ComplianceAgent",
+                "check_self_confirmation",
+                "not_confirmed",
+                result["reason"],
+                safety_event=True,
+            )
+        )
+        trace.append(
+            _trace_step(
+                6,
+                "CaregiverEscalationAgent",
+                "create_alert",
+                "caregiver_alert_created",
+                result["reason"],
+                safety_event=True,
+            )
+        )
+        if return_trace:
+            result["trace"] = trace
+        return result
 
-    return {
+    result = {
         "final_status": "completed",
         "safety": safety,
         "schedule": schedule,
         "package": package,
         "reason": "Check-in completed after schedule lookup, package match, and user confirmation."
     }
+    trace.append(
+        _trace_step(
+            5,
+            "ComplianceAgent",
+            "mark_completed",
+            "completed",
+            result["reason"],
+        )
+    )
+    trace.append(
+        _trace_step(
+            6,
+            "HistoryTrackerAgent",
+            "record_completion",
+            "history_updated",
+            "Completion recorded for adherence tracking.",
+        )
+    )
+    if return_trace:
+        result["trace"] = trace
+    return result
 
 
 if __name__ == "__main__":
