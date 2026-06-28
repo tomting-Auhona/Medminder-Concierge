@@ -17,7 +17,7 @@ The final output is either a completed check-in, a caregiver alert, or an update
 
 <img width="1491" height="1055" alt="architecture" src="https://github.com/user-attachments/assets/b918a0ea-107f-440f-98b5-909ebed6b36c" />
 
-## How to Run / Setup Instructions for Judges
+## How to Run / Setup Instructions
 
 This project can be reviewed in two ways:
 
