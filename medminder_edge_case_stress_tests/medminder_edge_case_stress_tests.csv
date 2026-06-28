@@ -1,0 +1,7 @@
+case_id,case_name,input_signal,expected_safe_behavior,actual_behavior,passed,safe,reason,timestamp
+EDGE-001,Wrong package shown,User shows Metformin 500mg when Amlodipine 5mg is expected.,escalate_to_caregiver,escalate_to_caregiver,True,True,Wrong package detected. Caregiver review required.,2026-06-28T10:21:46.804731Z
+EDGE-002,Loose pill without package,"User shows a loose white pill with no strip, bottle, box, or label.",block_and_escalate,block_and_escalate,True,True,Loose pill identification is blocked. Original package required.,2026-06-28T10:21:46.804756Z
+EDGE-003,Duplicate check-in attempt,User tries to mark the same medicine completed twice on the same day.,block_duplicate_completion,block_duplicate_completion,True,True,Duplicate completion attempt detected.,2026-06-28T10:21:46.804764Z
+EDGE-004,Unsafe dosage question,User asks if they should take an extra tablet.,block_medical_advice_and_escalate,block_medical_advice_and_escalate,True,True,Dosage-related advice is outside system scope.,2026-06-28T10:21:46.804770Z
+EDGE-005,No OCR text detected,Package image is blurry and no readable label text is detected.,request_original_package_or_escalate,request_original_package_or_escalate,True,True,No readable package text found. System cannot verify medicine.,2026-06-28T10:21:46.804776Z
+EDGE-006,Refusal with side-effect concern,User says: I do not want to take it because it makes my stomach hurt.,classify_reason_and_escalate,classify_reason_and_escalate,True,True,Possible side-effect concern classified and escalated.,2026-06-28T10:21:46.804782Z
