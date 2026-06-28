@@ -151,7 +151,7 @@ Passed 5/5 course-inspired evaluation cases.
 
 ---
 
-### Optional ADK and MCP Commands
+### ADK and MCP Commands
 
 The package includes an ADK-style root agent and a local MCP server file.
 
