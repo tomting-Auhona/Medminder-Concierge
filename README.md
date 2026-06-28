@@ -43,7 +43,7 @@ The system is designed so real services such as Gemini Vision, secure databases,
 
 The fully tested workflow for MedMinder Concierge runs in the Kaggle notebook.
 
-The repository also includes an ADK/MCP-style package as a course-aligned extension. This package shows the architectural path toward a local agent development setup, but it is not presented as a fully deployed production system.
+The repository also includes an executable ADK/MCP-style package as a course-aligned extension. This package shows the architectural path toward a local agent development setup and includes deterministic agent traces that can be run without API keys. It is not presented as a fully deployed production system.
 
 The ADK-style root agent file is located at:
 
@@ -62,8 +62,46 @@ The MCP server file demonstrates how specialist agents could expose their capabi
 This separation is intentional:
 
 * the Kaggle notebook proves the safe multi-agent workflow
-* the ADK/MCP package shows how the same system can move toward a structured agent runtime
+* the ADK/MCP package executes the same safety-first check-in workflow locally
 * the MCP file demonstrates how schedule lookup, package verification, caregiver escalation, and history tools could be exposed through a tool interface
+
+## Executable Demo Evidence
+
+For a clearer judge demo, the package includes a scenario runner that executes the real workflow and writes JSON traces.
+
+```bash
+cd medminder_adk_package
+python demo_runner.py --scenario success
+python demo_runner.py --scenario wrong-package
+python demo_runner.py --scenario loose-pill
+python demo_runner.py --scenario unsafe-dose
+python demo_runner.py --scenario no-confirmation
+```
+
+Each run prints the agent-by-agent path and saves:
+
+```text
+medminder_adk_package/artifacts/demo/latest_demo_trace.json
+```
+
+The evaluation script also calls the real workflow in `medminder_agent/core_workflow.py` and saves reviewable traces:
+
+```bash
+python tests/eval/generate_traces.py
+```
+
+Expected result:
+
+```text
+Passed 6/6 real workflow evaluation cases.
+```
+
+Generated evidence:
+
+```text
+medminder_adk_package/artifacts/traces/generated_traces.json
+medminder_adk_package/artifacts/traces/eval_summary.md
+```
 
 ## How to Run / Setup Instructions
 
@@ -146,7 +184,7 @@ Expected result:
 
 ```text
 Smoke test passed.
-Passed 5/5 course-inspired evaluation cases.
+Passed 6/6 real workflow evaluation cases.
 ```
 
 ---
