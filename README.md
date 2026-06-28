@@ -16,3 +16,19 @@ The specialist agents handle schedule lookup, timing checks, duplicate preventio
 The final output is either a completed check-in, a caregiver alert, or an updated history/adherence summary.
 
 <img width="1491" height="1055" alt="ChatGPT Image Jun 28, 2026, 12_53_26 PM" src="https://github.com/user-attachments/assets/6fac9b19-61c3-4a95-b14a-d6531d8ba945" />
+
+## Limitations and Future Work
+
+Current limitations:
+
+- no real patient data
+- no real medicine image upload in the demo
+- no real medical decision-making
+
+Future improvements could include:
+
+- Gemini Vision for reading original medicine packaging
+- Firebase or Supabase for secure storage
+- Twilio or WhatsApp caregiver alerts
+- authentication for caregivers
+- doctor-approved medication schedule import
