@@ -1,0 +1,96 @@
+[
+  {
+    "tool_call": {
+      "tool_call_id": "tool_001",
+      "timestamp": "2026-06-28T06:59:03.521193Z",
+      "tool_name": "schedule_lookup",
+      "arguments": {
+        "medicine_name": "Amlodipine",
+        "day": "Monday"
+      }
+    },
+    "tool_result": {
+      "status": "success",
+      "reason": "Scheduled medicine found.",
+      "data": {
+        "matches": [
+          {
+            "id": "med-001",
+            "name": "Amlodipine",
+            "dosage": "5mg",
+            "time": "09:00",
+            "instructions": "Take 1 tablet after breakfast.",
+            "days": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "tool_call": {
+      "tool_call_id": "tool_002",
+      "timestamp": "2026-06-28T06:59:03.521389Z",
+      "tool_name": "package_text_check",
+      "arguments": {
+        "expected_name": "Amlodipine",
+        "expected_dosage": "5mg",
+        "detected_text": "Rx: Amlodipine 5mg tablets. Take after breakfast. Patient: Mock Patient."
+      }
+    },
+    "tool_result": {
+      "status": "success",
+      "reason": "Package text matches stored schedule.",
+      "data": {
+        "package_match": true,
+        "detected_text": "Rx: Amlodipine 5mg tablets. Take after breakfast. Patient: Mock Patient."
+      }
+    }
+  },
+  {
+    "tool_call": {
+      "tool_call_id": "tool_003",
+      "timestamp": "2026-06-28T06:59:03.521507Z",
+      "tool_name": "caregiver_alert",
+      "arguments": {
+        "reason": "Package mismatch or unsafe confirmation state.",
+        "urgency": "medium"
+      }
+    },
+    "tool_result": {
+      "status": "success",
+      "reason": "Caregiver alert simulated.",
+      "data": {
+        "urgency": "medium",
+        "alert_reason": "Package mismatch or unsafe confirmation state."
+      }
+    }
+  },
+  {
+    "tool_call": {
+      "tool_call_id": "tool_004",
+      "timestamp": "2026-06-28T06:59:03.521611Z",
+      "tool_name": "history_summary",
+      "arguments": {
+        "completed": 8,
+        "missed": 2
+      }
+    },
+    "tool_result": {
+      "status": "success",
+      "reason": "History summary generated.",
+      "data": {
+        "completed": 8,
+        "missed": 2,
+        "adherence_score": 80.0
+      }
+    }
+  }
+]
