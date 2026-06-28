@@ -1,0 +1,11 @@
+test,passed,details,project,agent_system
+Correct packaging + user confirms should complete,True,Actual status: completed,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Fuzzy OCR label should pass packaging confirmation,True,Actual status: completed,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Loose pill should be blocked and escalated,True,Actual status: escalated,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Wrong medicine packaging should escalate,True,Actual status: escalated,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Refusal reason should be classified and escalated,True,Escalation: Alert for Auhona: Grandpa needs attention for Amlodipine. Reason: user_did_not_confirm_taken | Category: possible_side_effect_concern | Urgency: high | Details: The user reported a possible discomfort or side-effect concern: 'I don't want to take it because it makes me dizzy.'.,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Outside time window should escalate,True,Actual status: escalated,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Duplicate check-in should escalate,True,"First: completed, Second: escalated",MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Safety guardrail should block fuzzy dosage-change intent,True,Reason: medical_advice_or_dosage_change_block,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+Safe schedule question should be allowed,True,Reason: schedule_support_allowed,MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
+History tracker should calculate adherence and risk,True,"Score: 50.0, Risk: {'adherence_score': 50.0, 'missed_streak': 2, 'risk_level': 'high', 'message': 'Amlodipine was missed or escalated 2 times in a row.'}",MedMinder Concierge,Safe Multi-Agent Medication Routine Assistant
