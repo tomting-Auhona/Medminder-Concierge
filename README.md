@@ -209,6 +209,13 @@ More details are available in:
 * `STATE_MEMORY.md`
 * `PRODUCTION_READINESS.md`
 
+The notebook also includes fictional Gemini Vision OCR mocking and OpenTelemetry-style trajectory logs. The OCR mock simulates package text extraction from a medicine label, while the trajectory logs show how the coordinator routes a check-in through safety screening, schedule lookup, package verification, refusal analysis, caregiver escalation, and history tracking.
+
+Generated files:
+
+- `medminder_agent_trajectory_logs.csv`
+- `medminder_agent_trajectory_logs.json`
+
 The current project is a Kaggle-tested prototype with a repo-ready ADK/MCP extension. A live deployment is not included because the project is safety-first and uses mock medication data only. A future production version could run as a hosted API with health checks, structured logs, safety event tracking, caregiver authentication, and secure storage.
 
 ## Limitations and Future Work
