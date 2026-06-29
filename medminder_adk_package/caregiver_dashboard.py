@@ -57,25 +57,31 @@ HTML = """<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MedMinder Caregiver Dashboard</title>
   <style>
-    :root { color-scheme: light; --ink:#15202b; --muted:#5c6670; --line:#d7dde3; --ok:#1f7a4d; --alert:#b42318; --bg:#f6f8fa; --panel:#fff; }
+    :root { color-scheme: light; --ink:#15202b; --muted:#5c6670; --line:#d7dde3; --ok:#1f7a4d; --alert:#b42318; --blue:#175cd3; --bg:#f6f8fa; --panel:#fff; }
     body { margin:0; font-family: Arial, sans-serif; background:var(--bg); color:var(--ink); }
     main { max-width:980px; margin:0 auto; padding:24px; }
     header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
     h1 { font-size:24px; margin:0; }
+    .subtle { color:var(--muted); font-size:13px; margin-top:4px; }
     .grid { display:grid; grid-template-columns:320px 1fr; gap:16px; }
     section, aside { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; }
     label { display:block; font-size:13px; font-weight:700; margin:14px 0 6px; }
     select, input { width:100%; box-sizing:border-box; padding:10px; border:1px solid var(--line); border-radius:6px; font-size:14px; }
     button { width:100%; margin-top:14px; border:0; border-radius:6px; padding:11px 12px; font-size:14px; font-weight:700; cursor:pointer; }
-    .primary { background:#175cd3; color:white; }
+    .primary { background:var(--blue); color:white; }
     .secondary { background:#eef2f6; color:var(--ink); }
-    .status { display:flex; align-items:center; justify-content:space-between; padding:12px; border-radius:6px; background:#eef2f6; margin-bottom:14px; }
+    .status { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; border-radius:6px; background:#eef2f6; margin-bottom:14px; }
+    .evidence { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin:14px 0; }
+    .metric { border:1px solid var(--line); border-radius:6px; padding:10px; background:#fbfcfd; }
+    .metric span { display:block; color:var(--muted); font-size:12px; margin-bottom:5px; }
+    .metric strong { font-size:14px; word-break:break-word; }
     .completed { color:var(--ok); }
     .escalated, .blocked_and_escalated, .incomplete_and_escalated { color:var(--alert); }
     ol { padding-left:22px; margin:0; }
     li { margin:0 0 12px; }
-    code { font-size:12px; color:var(--muted); }
-    @media (max-width: 760px) { .grid { grid-template-columns:1fr; } main { padding:14px; } }
+    code, pre { font-size:12px; color:var(--muted); }
+    pre { white-space:pre-wrap; background:#f8fafc; border:1px solid var(--line); border-radius:6px; padding:10px; }
+    @media (max-width: 760px) { .grid, .evidence { grid-template-columns:1fr; } main { padding:14px; } }
   </style>
 </head>
 <body>
@@ -83,7 +89,7 @@ HTML = """<!doctype html>
   <header>
     <div>
       <h1>MedMinder Caregiver Dashboard</h1>
-      <div id="topic">ntfy topic: medminder-concierge-demo</div>
+      <div class="subtle" id="topic">ntfy topic: medminder-concierge-demo</div>
     </div>
   </header>
   <div class="grid">
@@ -100,11 +106,18 @@ HTML = """<!doctype html>
       <input id="ntfyTopic" value="medminder-concierge-demo">
       <button class="primary" onclick="run(false)">Run check-in</button>
       <button class="secondary" onclick="run(true)">Run + send real alert</button>
+      <p class="subtle">The first button executes the workflow in dry-run notification mode. The second publishes an escalation alert to the ntfy topic.</p>
     </aside>
     <section>
       <div class="status"><strong id="final">No check-in run yet</strong><span id="sent"></span></div>
       <p id="reason"></p>
+      <div class="evidence">
+        <div class="metric"><span>Workflow</span><strong id="workflow">Waiting</strong></div>
+        <div class="metric"><span>Notification</span><strong id="notification">Waiting</strong></div>
+        <div class="metric"><span>Saved trace</span><strong>artifacts/dashboard/latest_dashboard_trace.json</strong></div>
+      </div>
       <ol id="trace"></ol>
+      <pre id="payload"></pre>
     </section>
   </div>
 </main>
@@ -113,14 +126,25 @@ async function run(send) {
   const scenario = document.getElementById('scenario').value;
   const topic = document.getElementById('ntfyTopic').value.trim() || 'medminder-concierge-demo';
   document.getElementById('topic').textContent = 'ntfy topic: ' + topic;
-  const response = await fetch(`/api/checkin?scenario=${encodeURIComponent(scenario)}&notify=${send ? '1' : '0'}&topic=${encodeURIComponent(topic)}`, {method:'POST'});
-  const data = await response.json();
-  document.getElementById('final').textContent = data.final_status;
-  document.getElementById('final').className = data.final_status;
-  document.getElementById('reason').textContent = data.reason;
-  const notification = data.caregiver_notification;
-  document.getElementById('sent').textContent = notification ? (notification.sent ? 'alert sent' : 'dry-run alert') : 'no alert';
-  document.getElementById('trace').innerHTML = data.trace.map(step => `<li><strong>${step.agent}</strong> ${step.action} -> ${step.decision}<br><code>${step.output}</code></li>`).join('');
+  document.getElementById('final').textContent = 'Running...';
+  document.getElementById('sent').textContent = '';
+  document.getElementById('payload').textContent = '';
+  try {
+    const response = await fetch(`/api/checkin?scenario=${encodeURIComponent(scenario)}&notify=${send ? '1' : '0'}&topic=${encodeURIComponent(topic)}`, {method:'POST'});
+    const data = await response.json();
+    document.getElementById('final').textContent = data.final_status;
+    document.getElementById('final').className = data.final_status;
+    document.getElementById('reason').textContent = data.reason;
+    document.getElementById('workflow').textContent = `${scenario} -> ${data.final_status}`;
+    const notification = data.caregiver_notification;
+    document.getElementById('notification').textContent = notification ? (notification.sent ? `sent to ${notification.url}` : `dry-run at ${notification.url}`) : 'no alert needed';
+    document.getElementById('sent').textContent = notification ? (notification.sent ? 'alert sent' : 'dry-run alert') : 'no alert';
+    document.getElementById('trace').innerHTML = data.trace.map(step => `<li><strong>${step.step}. ${step.agent}</strong> ${step.action} -> ${step.decision}<br><code>${step.output}</code></li>`).join('');
+    document.getElementById('payload').textContent = notification ? JSON.stringify(notification, null, 2) : '';
+  } catch (error) {
+    document.getElementById('final').textContent = 'Dashboard error';
+    document.getElementById('reason').textContent = error.message;
+  }
 }
 </script>
 </body>

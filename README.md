@@ -105,7 +105,7 @@ medminder_adk_package/artifacts/traces/eval_summary.md
 
 ## Live Caregiver Alert Demo
 
-The package also includes a phone-style caregiver dashboard and a real notification path through ntfy.sh.
+The package also includes a phone-style caregiver dashboard and a real notification path through ntfy.sh. This is the clearest executable demo path for reviewers because it runs the workflow, shows the agent trace, saves the JSON artifact, and can send a real phone alert from an escalation scenario.
 
 ```bash
 cd medminder_adk_package
@@ -118,7 +118,19 @@ Open:
 http://127.0.0.1:8765
 ```
 
-For a real phone notification, install the ntfy app and subscribe to `medminder-concierge-demo`, then run an escalation scenario with `Run + send real alert`.
+Use `Run check-in` for safe dry-run notification evidence. Use `Run + send real alert` only after installing the ntfy app and subscribing to `medminder-concierge-demo`.
+
+The same notification path can be tested from the CLI:
+
+```bash
+python demo_runner.py --scenario wrong-package --notify --ntfy-topic medminder-concierge-demo
+```
+
+The dashboard writes:
+
+```text
+medminder_adk_package/artifacts/dashboard/latest_dashboard_trace.json
+```
 
 Cloud Run container notes are in:
 

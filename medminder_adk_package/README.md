@@ -38,7 +38,7 @@ Then run an escalation scenario with notification enabled:
 python demo_runner.py --scenario wrong-package --notify --ntfy-topic medminder-concierge-demo
 ```
 
-Without `--notify`, MedMinder builds the exact alert payload but keeps it in dry-run mode.
+Without `--notify`, MedMinder still builds the exact alert payload and ntfy URL, but keeps delivery in dry-run mode. This makes the demo safe for Kaggle while still proving the notification integration path.
 
 ## Phone-style caregiver dashboard
 
@@ -54,7 +54,14 @@ Open:
 http://127.0.0.1:8765
 ```
 
-The dashboard executes the real workflow, shows the agent trace, writes `artifacts/dashboard/latest_dashboard_trace.json`, and can send a real ntfy caregiver alert for escalation cases.
+The dashboard is not a static mockup. Each button press executes `medminder_agent/core_workflow.py`, shows the agent trace, writes `artifacts/dashboard/latest_dashboard_trace.json`, and displays the notification payload. For escalation cases, `Run + send real alert` publishes to ntfy so the alert can appear in the phone app.
+
+Reviewer flow:
+
+1. Choose `Wrong package`, `Loose pill`, `Unsafe dose request`, or `No self-confirmation`.
+2. Click `Run check-in` for a dry-run trace and alert payload.
+3. Subscribe the ntfy app to `medminder-concierge-demo`.
+4. Click `Run + send real alert` to receive the phone notification.
 
 Deployment notes are in:
 
