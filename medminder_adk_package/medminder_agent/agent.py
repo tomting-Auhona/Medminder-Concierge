@@ -5,6 +5,8 @@ except Exception:
         def __init__(self, **kwargs):
             self.__dict__.update(kwargs)
 
+from medminder_agent.core_workflow import run_checkin_workflow, schedule_lookup, verify_package_text
+
 ROOT_INSTRUCTION = '''
 You are MedMinder Concierge, a safety-first medication routine assistant.
 
@@ -32,5 +34,5 @@ root_agent = Agent(
     model="gemini-flash-latest",
     description="Safety-first medication routine assistant for seniors and caregivers.",
     instruction=ROOT_INSTRUCTION,
-    tools=[],
+    tools=[schedule_lookup, verify_package_text, run_checkin_workflow],
 )

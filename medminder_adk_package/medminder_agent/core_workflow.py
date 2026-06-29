@@ -8,7 +8,7 @@ decisions.
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Dict, List
+from typing import Callable, Dict, List, Optional
 
 
 @dataclass
@@ -143,6 +143,7 @@ def run_checkin_workflow(
     detected_text: str,
     user_confirmed: bool,
     return_trace: bool = False,
+    alert_sender: Optional[Callable[[Dict], Dict]] = None,
 ) -> Dict:
     trace = [
         _trace_step(
@@ -182,6 +183,8 @@ def run_checkin_workflow(
                 safety_event=True,
             )
         )
+        if alert_sender:
+            result["caregiver_notification"] = alert_sender(result)
         if return_trace:
             result["trace"] = trace
         return result
@@ -213,6 +216,8 @@ def run_checkin_workflow(
                 safety_event=True,
             )
         )
+        if alert_sender:
+            result["caregiver_notification"] = alert_sender(result)
         if return_trace:
             result["trace"] = trace
         return result
@@ -253,6 +258,8 @@ def run_checkin_workflow(
                 safety_event=True,
             )
         )
+        if alert_sender:
+            result["caregiver_notification"] = alert_sender(result)
         if return_trace:
             result["trace"] = trace
         return result
@@ -285,6 +292,8 @@ def run_checkin_workflow(
                 safety_event=True,
             )
         )
+        if alert_sender:
+            result["caregiver_notification"] = alert_sender(result)
         if return_trace:
             result["trace"] = trace
         return result

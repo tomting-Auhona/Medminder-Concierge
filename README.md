@@ -103,6 +103,29 @@ medminder_adk_package/artifacts/traces/generated_traces.json
 medminder_adk_package/artifacts/traces/eval_summary.md
 ```
 
+## Live Caregiver Alert Demo
+
+The package also includes a phone-style caregiver dashboard and a real notification path through ntfy.sh.
+
+```bash
+cd medminder_adk_package
+python caregiver_dashboard.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:8765
+```
+
+For a real phone notification, install the ntfy app and subscribe to `medminder-concierge-demo`, then run an escalation scenario with `Run + send real alert`.
+
+Cloud Run container notes are in:
+
+```text
+medminder_adk_package/DEPLOYMENT.md
+```
+
 ## How to Run / Setup Instructions
 
 This project can be reviewed in two ways:

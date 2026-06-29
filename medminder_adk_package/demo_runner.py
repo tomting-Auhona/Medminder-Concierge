@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from medminder_agent.core_workflow import run_checkin_workflow
+from medminder_agent.notification_service import build_caregiver_alert, send_ntfy_alert
 
 
 SCENARIOS = {
@@ -74,9 +75,24 @@ def main():
         default="artifacts/demo/latest_demo_trace.json",
         help="Where to save the full JSON result.",
     )
+    parser.add_argument(
+        "--notify",
+        action="store_true",
+        help="Send a real caregiver alert through ntfy.sh when escalation happens.",
+    )
+    parser.add_argument(
+        "--ntfy-topic",
+        default="medminder-concierge-demo",
+        help="ntfy.sh topic to publish caregiver alerts to.",
+    )
     args = parser.parse_args()
 
     scenario = SCENARIOS[args.scenario]
+
+    def alert_sender(result):
+        alert = build_caregiver_alert(result, topic=args.ntfy_topic)
+        return send_ntfy_alert(alert, dry_run=not args.notify)
+
     result = run_checkin_workflow(
         user_text=scenario["user_text"],
         medicine_name=scenario["medicine_name"],
@@ -84,6 +100,7 @@ def main():
         detected_text=scenario["package_text"],
         user_confirmed=scenario["user_confirmed"],
         return_trace=True,
+        alert_sender=alert_sender,
     )
 
     output = Path(args.json_output)
@@ -91,6 +108,11 @@ def main():
     output.write_text(json.dumps(result, indent=2), encoding="utf-8")
 
     render_trace(result)
+    if "caregiver_notification" in result:
+        notification = result["caregiver_notification"]
+        print(f"Caregiver notification provider: {notification['provider']}")
+        print(f"Caregiver notification sent: {notification['sent']}")
+        print(f"Caregiver notification URL: {notification['url']}")
     print(f"Saved JSON trace: {output}")
 
 

@@ -48,6 +48,19 @@ def run_smoke_test():
     assert unsafe_checkin["final_status"] == "blocked_and_escalated"
     assert "CaregiverEscalationAgent" in _agent_names(unsafe_checkin)
 
+    sent = []
+    alerted_checkin = run_checkin_workflow(
+        user_text="I am checking my scheduled medicine.",
+        medicine_name="Amlodipine",
+        day="Monday",
+        detected_text="Rx: Metformin 500mg tablets. Take after dinner.",
+        user_confirmed=True,
+        return_trace=True,
+        alert_sender=lambda result: sent.append(result["reason"]) or {"sent": True},
+    )
+    assert alerted_checkin["caregiver_notification"]["sent"] is True
+    assert sent == ["Package text does not match the stored schedule."]
+
     print("Smoke test passed.")
 
 if __name__ == "__main__":
